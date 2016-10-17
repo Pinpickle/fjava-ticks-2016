@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 /**
  * Helper methods for observing inputs
@@ -22,7 +21,7 @@ public abstract class ReactiveInput {
             } catch (IOException exception) {
                 throw new RuntimeException(exception);
             }
-        }).exceptionally(printException);
+        });
     }
 
     public static CompletableFuture<Void> observeBufferedReader(BufferedReader sourceReader, IOConsumer<String> onData) {
@@ -34,13 +33,8 @@ public abstract class ReactiveInput {
             } catch (IOException exception) {
                 throw new RuntimeException(exception);
             }
-        }).exceptionally(printException);
+        });
     }
-
-    private static final Function<Throwable, Void> printException = throwable -> {
-        throwable.printStackTrace();
-        return null;
-    };
 
     public interface IOConsumer<T> {
         void accept(T value) throws IOException;
