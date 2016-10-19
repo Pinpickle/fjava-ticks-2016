@@ -44,7 +44,10 @@ public class ChatClient {
             return;
         }
 
-        CompletableFuture.anyOf(outputFuture, readingFuture.exceptionally(throwable -> { throw new RuntimeException(throwable); }))
+        CompletableFuture.anyOf(
+            outputFuture,
+            readingFuture.exceptionally(throwable -> { throw new RuntimeException(throwable); })
+        )
             .thenRun(() -> readingFuture.cancel(true))
             .join();
     }

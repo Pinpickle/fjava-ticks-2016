@@ -44,7 +44,9 @@ class UserInputReceiver {
                 break;
 
             default:
-                System.out.println(MessageRenderer.renderMessageFromClientNow(String.format("Unknown command \"%s\"", command)));
+                clientActions.writeOutput(
+                    MessageRenderer.renderMessageFromClientNow(String.format("Unknown command \"%s\"", command))
+                );
                 break;
         }
     }

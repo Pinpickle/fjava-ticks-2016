@@ -24,7 +24,9 @@ public class Client {
         ClientActions clientActions = new ClientActions();
         serverMessageReceiver = new ServerMessageReceiver(clientActions);
         userInputReceiver = new UserInputReceiver(clientActions);
-        clientActions.writeOutput(MessageRenderer.renderMessageFromClientNow(String.format("Connected to %s on port %s.", socket.getHost(), socket.getPort())));
+        clientActions.writeOutput(MessageRenderer.renderMessageFromClientNow(
+            String.format("Connected to %s on port %s.", socket.getHost(), socket.getPort())
+        ));
 
         return socket.observe(serverMessageReceiver::acceptMessage).thenRun(() ->
             clientActions.writeOutput(MessageRenderer.renderMessageFromClientNow("Connection terminated.")

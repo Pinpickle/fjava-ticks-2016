@@ -16,21 +16,36 @@ import java.util.function.Consumer;
  * Handles messages sent to us by the server
  */
 class ServerMessageReceiver {
+    /**
+     * A list of potential actions to perform on messages. The first action that matches the type of the incoming
+     * message will be performed. This means that order is significant.
+     */
     private final List<MessageAction> actions;
 
     ServerMessageReceiver(Client.ClientActions clientActions) {
         actions = Arrays.asList(
             new MessageAction<>(RelayMessage.class, (message) ->
-                clientActions.writeOutput(MessageRenderer.renderMessage(message.getCreationTime(), message.getFrom(), message.getMessage()))
+                clientActions.writeOutput(MessageRenderer.renderMessage(
+                    message.getCreationTime(),
+                    message.getFrom(),
+                    message.getMessage()
+                ))
             ),
             new MessageAction<>(StatusMessage.class, message ->
-                clientActions.writeOutput(MessageRenderer.renderMessage(message.getCreationTime(), "Server", message.getMessage()))
+                clientActions.writeOutput(MessageRenderer.renderMessage(
+                    message.getCreationTime(),
+                    "Server",
+                    message.getMessage()
+                ))
             ),
             new MessageAction<>(NewMessageType.class, message ->
                 clientActions.addClass(message.getName(), message.getClassData())
             ),
             new MessageAction<>(Message.class, message -> {
-                clientActions.writeOutput(MessageRenderer.renderMessageFromClient(message.getCreationTime(), MessageRenderer.getUnknownMessageInfo(message)));
+                clientActions.writeOutput(MessageRenderer.renderMessageFromClient(
+                    message.getCreationTime(),
+                    MessageRenderer.getUnknownMessageInfo(message)
+                ));
                 executeMessageIfPossible(message);
             }),
             new MessageAction<>(Object.class, message ->
@@ -60,6 +75,10 @@ class ServerMessageReceiver {
             });
     }
 
+    /**
+     * Encapsulates an action to be performed on a message, and what type of object it is expected to perform this
+     * action on.
+     */
     private static class MessageAction<T> {
         private Class<T> classToActOn;
         private Consumer<T> actionToPerform;
