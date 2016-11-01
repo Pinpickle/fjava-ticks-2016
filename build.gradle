@@ -34,3 +34,11 @@ task tick2(type: Jar) {
 
     with jar
 }
+
+task tick3(type: Jar) {
+    archivesBaseName = 'cas217-tick3'
+    include 'uk/ac/cam/cas217/fjava/tick3/**'
+    version = null
+
+    with jar
+}
