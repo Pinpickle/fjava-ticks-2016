@@ -20,7 +20,7 @@ public class BankSimulator {
         this.tellerCount = tellerCount;
 
         for(int i = 0; i< this.accounts.length; i++) {
-            this.accounts[i] = new BankAccount(initialCapital / this.accounts.length);
+            this.accounts[i] = new BankAccount(initialCapital / this.accounts.length, i);
         }
     }
 
@@ -66,19 +66,24 @@ public class BankSimulator {
     }
 
     private class BankAccount {
+        public final int accountNumber;
         private int balance;
 
-        BankAccount(int deposit) {
+        BankAccount(int deposit, int accountNumber) {
+            this.accountNumber = accountNumber;
             balance = deposit;
         }
 
         public void transferTo(BankAccount b, int amount) {
-            synchronized (this) {
-                balance -= amount;
-            }
+            // Use partial ordering of bank accounts to prevent deadlock
+            BankAccount smallerAccount = accountNumber < b.accountNumber ? this : b;
+            BankAccount largerAccount = accountNumber < b.accountNumber ? b : this;
 
-            synchronized (b) {
-                b.balance += amount;
+            synchronized (smallerAccount) {
+                synchronized (largerAccount) {
+                    balance -= amount;
+                    b.balance += amount;
+                }
             }
         }
     }
