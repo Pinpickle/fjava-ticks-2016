@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.0.0'
 }
 
 jar {
@@ -46,6 +47,15 @@ task tick3(type: Jar) {
 task tick4(type: Jar) {
     archivesBaseName = 'cas217-tick4'
     include 'uk/ac/cam/cas217/fjava/tick4/**'
+    include 'uk/ac/cam/cl/fjava/messages/**'
+    version = null
+
+    with jar
+}
+
+task tick5(type: Jar) {
+    archivesBaseName = 'cas217-tick5'
+    include 'uk/ac/cam/cas217/fjava/tick5/**'
     include 'uk/ac/cam/cl/fjava/messages/**'
     version = null
 
